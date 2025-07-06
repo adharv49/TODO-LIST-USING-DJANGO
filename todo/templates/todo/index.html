@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My To-Do Calendar App</title>
+    <link rel="stylesheet" href="{% static 'todo/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>📝 My To-Do List</h1>
+
+        <!-- Add Task Form -->
+        <form action="/add/" method="POST" class="add-form">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Enter task title" required>
+            <input type="date" name="due_date">
+            <button type="submit">Add</button>
+        </form>
+
+        <!-- Toggle Overdue Tasks -->
+        
+<div class="overdue-toggle">
+    {% if show_overdue %}
+        <a href="/" class="toggle-button">🔁 Show All Tasks</a>
+    {% else %}
+        <a href="?show=overdue" class="toggle-button">🔴 Show Overdue Tasks</a>
+    {% endif %}
+    <a href="/completed/" class="toggle-button">✅ Completed Tasks</a>
+</div>
+
+        <!-- Task List -->
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="{% if task.completed %}completed{% endif %} {% if task.due_date and task.due_date < today and not task.completed %}overdue{% endif %}">
+                    <div class="task-text">
+                        <strong>{{ task.title }}</strong>
+
+                        {% if task.due_date %}
+                            <div class="date">
+                                📅 Due: {{ task.due_date|date:"d M Y" }}
+                                {% if not task.completed %}
+                                    {% if task.due_date < today %}
+                                        <span class="badge overdue-badge">Overdue</span>
+                                    {% elif task.due_date == today %}
+                                        <span class="badge today-badge">Today</span>
+                                    {% else %}
+                                        <span class="badge upcoming-badge">Upcoming</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="actions">
+                        <a href="/complete/{{ task.id }}/" title="Mark as complete">✅</a>
+                        <a href="/edit/{{ task.id }}/" title="Edit">✏️</a>
+                        <a href="/delete/{{ task.id }}/" class="delete" title="Delete" onclick="return confirm('Delete this task?')">❌</a>
+                    </div>
+                </li>
+            {% empty %}
+                <li>No tasks found!</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

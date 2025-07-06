@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Task</title>
+    <link rel="stylesheet" href="{% static 'todo/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>✏️ Edit Task</h1>
+
+        <!-- Edit Task Form -->
+        <form method="POST" class="add-form">
+            {% csrf_token %}
+            <input type="text" name="title" value="{{ task.title }}" required>
+            <input type="date" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}">
+            <button type="submit">Save</button>
+            <a href="/" class="toggle-button">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

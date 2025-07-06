@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Completed Tasks</title>
+    <link rel="stylesheet" href="{% static 'todo/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Completed Tasks</h1>
+
+        <!-- Back to main task list -->
+        <a href="/" class="toggle-button">⬅ Back to All Tasks</a>
+
+        <!-- Completed Task List -->
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="completed">
+                    <div class="task-text">
+                        <strong>{{ task.title }}</strong>
+
+                        {% if task.due_date %}
+                            <div class="date">📅 Due: {{ task.due_date|date:"d M Y" }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="actions">
+                        <a href="/complete/{{ task.id }}/" title="Mark as incomplete">🔁</a>
+                        <a href="/delete/{{ task.id }}/" class="delete" title="Delete" onclick="return confirm('Delete this task?')">❌</a>
+                    </div>
+                </li>
+            {% empty %}
+                <li>No completed tasks yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
